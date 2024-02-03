@@ -1,0 +1,90 @@
+<mod name="haptics" global_key="haptics">
+    <Hooks directory="Hooks">
+        <hook file="GroupAIStateBeSiege.lua" source_file="lib/managers/group_ai_states/groupaistatebesiege"/>
+    </Hooks>
+
+    <!--
+    <Localization directory="Localization" default="english.txt">
+    </Localization>
+
+
+    <!-- TODO: I need a buttplug websocket URI in options, as well as an on/off toggle, and maybe phase-specific strength values -->
+    <Options name="Options" auto_build_menu="true" auto_load="true">
+        <options title_id="Assault_States_Options_Title" desc_id="Assault_States_Options_Desc" >
+            <merge_data area_bg="half"/>
+            <option_group name="Enabled" title_id="Assault_States_Options_Enable_Title" desc_id="Assault_States_Options_Enable_Desc">
+                <merge_data area_bg="half"/>
+                <option type="bool" default_value="true" name="enable_control_task" title_id="Assault_States_Options_Enable_ControlTask_Title" desc_id="Assault_States_Options_Enable_generalTask_Desc"/>
+                <option type="bool" default_value="true" name="enable_anticipation_task" title_id="Assault_States_Options_Enable_AnticipationTask_Title" desc_id="Assault_States_Options_Enable_generalTask_Desc"/>
+                <option type="bool" default_value="true" name="enable_build_task" title_id="Assault_States_Options_Enable_BuildTask_Title" desc_id="Assault_States_Options_Enable_generalTask_Desc"/>
+                <option type="bool" default_value="true" name="enable_sustain_task" title_id="Assault_States_Options_Enable_SustainTask_Title" desc_id="Assault_States_Options_Enable_generalTask_Desc"/>
+                <option type="bool" default_value="true" name="enable_fade_task" title_id="Assault_States_Options_Enable_FadeTask_Title" desc_id="Assault_States_Options_Enable_generalTask_Desc"/>
+            </option_group>
+
+            <option_group name="Textlist" title_id="Assault_States_Options_Textlist_Title" desc_id="Assault_States_Options_Textlist_Desc">
+                <merge_data area_bg="half"/>
+                <option type="multichoice" name="textlist_control_task" default_value="1" title_id="Assault_States_Options_Textlist_ControlTask_Title" desc_id="Assault_States_Options_Textlist_general_Desc">
+                    <values> 
+                        <value_node value="ControlTask_textlist_1"/>
+                        <value_node value="ControlTask_textlist_2"/>
+                        <value_node value="ControlTask_textlist_3"/>
+                        <value_node value="ControlTask_textlist_4"/>
+                    </values>
+                </option>
+                <divider name="hud_tweak_divider" size="15"/>
+                <option type="multichoice" name="textlist_anticipation_task" default_value="1" title_id="Assault_States_Options_Textlist_AnticipationTask_Title" desc_id="Assault_States_Options_Textlist_general_Desc">
+                    <values> 
+                        <value_node value="AnticipationTask_textlist_1"/>
+                        <value_node value="AnticipationTask_textlist_2"/>
+                        <value_node value="AnticipationTask_textlist_3"/>
+                        <value_node value="AnticipationTask_textlist_4"/>
+                    </values>
+                </option>
+                <divider name="hud_tweak_divider" size="15"/>
+                <option type="multichoice" name="textlist_build_task" default_value="1" title_id="Assault_States_Options_Textlist_BuildTask_Title" desc_id="Assault_States_Options_Textlist_general_Desc">
+                    <values> 
+                        <value_node value="BuildTask_textlist_1"/>
+                        <value_node value="BuildTask_textlist_2"/>
+                        <value_node value="BuildTask_textlist_3"/>
+                        <value_node value="BuildTask_textlist_4"/>
+                        <value_node value="BuildTask_textlist_5"/>
+                        <value_node value="BuildTask_textlist_6"/>
+                    </values>
+                </option>
+                <divider name="hud_tweak_divider" size="15"/>
+                <option type="multichoice" name="textlist_sustain_task" default_value="1" title_id="Assault_States_Options_Textlist_SustainTask_Title" desc_id="Assault_States_Options_Textlist_general_Desc">
+                    <values> 
+                        <value_node value="SustainTask_textlist_1"/>
+                        <value_node value="SustainTask_textlist_2"/>
+                        <value_node value="SustainTask_textlist_3"/>
+                        <value_node value="SustainTask_textlist_4"/>
+                    </values>
+                </option>
+                <divider name="hud_tweak_divider" size="15"/>
+                <option type="multichoice" name="textlist_fade_task" default_value="1" title_id="Assault_States_Options_Textlist_FadeTask_Title" desc_id="Assault_States_Options_Textlist_general_Desc">
+                    <values> 
+                        <value_node value="FadeTask_textlist_1"/>
+                        <value_node value="FadeTask_textlist_2"/>
+                        <value_node value="FadeTask_textlist_3"/>
+                        <value_node value="FadeTask_textlist_4"/>
+                        <value_node value="FadeTask_textlist_5"/>
+                    </values>
+                </option>
+            </option_group>
+
+            <option_group name="Color" title_id="Assault_States_Options_Color_Title" desc_id="Assault_States_Options_Color_Desc">
+                <merge_data area_bg="half"/>
+                <option type="colour" show_value="true" default_value="Color(1, 1, 1, 1)" name="color_controltask" title_id="Assault_States_Options_Color_ControlTask_Title" desc_id="Assault_States_Options_Color_general_desc" scale_factor="255" />
+                <divider name="hud_tweak_divider" size="15"/>
+                <option type="colour" show_value="true" default_value="Color(1, 0.73, 0.8, 0.11)" name="color_anticipationtask" title_id="Assault_States_Options_Color_AnticipationTask_Title" desc_id="Assault_States_Options_Color_general_desc" scale_factor="255" />
+                <divider name="hud_tweak_divider" size="15"/>
+                <option type="colour" show_value="true" default_value="Color(1, 1, 0)" name="color_buildtask" title_id="Assault_States_Options_Color_BuildTask_Title" desc_id="Assault_States_Options_Color_general_desc" scale_factor="255" />
+                <divider name="hud_tweak_divider" size="15"/>
+                <option type="colour" show_value="true" default_value="Color(0.93, 0.5, 0.5)" name="color_sustaintask" title_id="Assault_States_Options_Color_SustainTask_Title" desc_id="Assault_States_Options_Color_general_desc" scale_factor="255" />
+                <divider name="hud_tweak_divider" size="15"/>
+                <option type="colour" show_value="true" default_value="Color(0.73, 0.8, 0.11)" name="color_fadetask" title_id="Assault_States_Options_Color_FadeTask_Title" desc_id="Assault_States_Options_Color_general_desc" scale_factor="255" />
+            </option_group>
+        </options>
+    </Options>
+    -->
+</mod>
