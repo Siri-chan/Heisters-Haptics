@@ -1,3 +1,21 @@
 a thing
 not under a license bc I feel guilty about so blatanly taking code from [Sora/Nepgearsy's Assault States](https://modworkshop.net/mod/19391)
 uses BeardLib, SuperBLT and buttplug-lua <https://github.com/abbihors/buttplug-lua>
+
+
+
+
+NOTE: This code currently not work. This is mostly because BLT has issues calling require (believe me I've tried), and can't use the FFI library.
+Here's my solution (that is 100% guaranteed to work im sure):
+
+BLT does have (at least functioning enough to open `calc.exe`) support for `io.popen()`. This means - we can open a second program with dynamic information.
+
+Here's the plan:
+`haptic_serve.exe`: A program that runs as a daemon that is launched during `HapticsCore:init()`, and only gets closed by the user. This actually holds the connection with the Buttplug Websocket.
+`haptic_ctl.exe`: A program that is run whenever vibration strength updates need to be issued, with arguments that inform it of how to alter the vibrations.
+                    This then communicates (through a named pipe or some other IPC method we'll figure it out later) with `haptic_serve.exe`
+
+
+Alternatively, this could be done with a python script or something for system compatability - I'll need to think on this for a bit.
+
+In this commit, I will also leave my cursed as FUCK solution for a lack of `require`. It only works when you have a path to a library, but might be useful to somebody.

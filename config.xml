@@ -1,14 +1,40 @@
 <mod name="haptics" global_key="haptics">
-    <Hooks directory="Hooks">
+    <Hooks directory="lua/Hooks">
         <hook file="GroupAIStateBeSiege.lua" source_file="lib/managers/group_ai_states/groupaistatebesiege"/>
     </Hooks>
 
+    <!-- todo once i have this working, create a "stable" branch or smth -->
+    <AssetUpdates id="Siri-chan/Heisters-Haptics" provider="github" branch="master"/>
+
     <!--
-    <Localization directory="Localization" default="english.txt">
-    </Localization>
+    <Keybind keybind_id="haptics_toggle" name="Toggle Haptics" description="Turn on or off haptics without menuing." localized="false" script_path="lua/toggle.lua"/>
+    -->
 
+    <Localization directory="loc" default="english.json" />
 
-    <!-- TODO: I need a buttplug websocket URI in options, as well as an on/off toggle, and maybe phase-specific strength values -->
+    <Options name="Options" auto_build_menu="true" auto_load="true">
+        <options title_id="Haptics_Options_Title" desc_id="Haptics_Options_Desc" >
+            <merge_data area_bg="half"/>
+            <option_group name="Basic" title_id="Haptics_Options_SubTitle" desc_id="Haptics_Options_SubDesc">
+                <merge_data area_bg="half"/>
+                <option type="bool" default_value="true" value_changed="_G.HapticsCore:set_options" name="enable_feedback" title_id="Haptics_Options_EnableFeedback_Title" desc_id="Haptics_Options_EnableFeedback_Desc"/>
+                <!-- TODO: Redo this menu in BeardLib MenuUI so I can set up a Websocket URI entry - right now, I just hardcoded `ws://127.0.0.1:12345` -->
+            </option_group>
+            <option_group name="Intensity" title_id="Haptics_IntensityOptions_SubTitle" desc_id="Haptics_IntensityOptions_SubDesc">
+                <merge_data area_bg="half"/>
+                <option type="number" min="0" max="100" show_value="true" step="1" default_value="0" value_changed="_G.HapticsCore:set_options" name="control_strength" title_id="Haptics_IntensityOptions_ControlTask_Title" desc_id="Haptics_IntensityOptions_Generic_Desc"/>
+                <option type="number" min="0" max="100" show_value="true" step="1" default_value="0" value_changed="_G.HapticsCore:set_options" name="anticipation_strength" title_id="Haptics_IntensityOptions_AnticipationTask_Title" desc_id="Haptics_IntensityOptions_Generic_Desc"/>
+                <option type="number" min="0" max="100" show_value="true" step="1" default_value="0" value_changed="_G.HapticsCore:set_options" name="build_strength" title_id="Haptics_IntensityOptions_BuildTask_Title" desc_id="Haptics_IntensityOptions_Generic_Desc"/>
+                <option type="number" min="0" max="100" show_value="true" step="1" default_value="0" value_changed="_G.HapticsCore:set_options" name="sustain_strength" title_id="Haptics_IntensityOptions_SustainTask_Title" desc_id="Haptics_IntensityOptions_Generic_Desc"/>
+                <option type="number" min="0" max="100" show_value="true" step="1" default_value="0" value_changed="_G.HapticsCore:set_options" name="fade_strength" title_id="Haptics_IntensityOptions_FadeTask_Title" desc_id="Haptics_IntensityOptions_Generic_Desc"/>
+                <option type="number" min="0" max="100" show_value="true" step="1" default_value="0" value_changed="_G.HapticsCore:set_options" name="no_return_strength" title_id="Haptics_IntensityOptions_NoReturn_Task_Title" desc_id="Haptics_IntensityOptions_Generic_Desc"/>
+                <option type="number" min="0" max="100" show_value="true" step="1" default_value="0" value_changed="_G.HapticsCore:set_options" name="phalanx_strength" title_id="Haptics_IntensityOptions_Phalanx_Task_Title" desc_id="Haptics_IntensityOptions_Generic_Desc"/>
+            </option_group>
+        </options>
+    </Options>
+
+    
+    <!--
     <Options name="Options" auto_build_menu="true" auto_load="true">
         <options title_id="Assault_States_Options_Title" desc_id="Assault_States_Options_Desc" >
             <merge_data area_bg="half"/>

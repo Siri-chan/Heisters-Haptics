@@ -1,0 +1,20 @@
+{
+	"Haptics_Options_Title" : "Heister's Haptics",
+	"Haptics_Options_Desc" : "Customize your haptic feedback.",
+
+	"Haptics_Options_SubTitle" : "Basic Options",
+	"Haptics_Options_SubDesc" : "Enable or disable some parts of the mod.",
+	"Haptics_Options_EnableFeedback_Desc" : "Enable Haptic Feedback to the device(s) connected via. Buttplug. Disable this if you just want to host the mod for others.",
+	"Haptics_Options_EnableFeedback_Title" : "Enable Haptic Feedback",
+
+    "Haptics_IntensityOptions_SubTitle" : "Vibration Intensities",
+	"Haptics_IntensityOptions_SubDesc" : "Change the Intensity with which your vibrator vibrates.",
+    "Haptics_IntensityOptions_Generic_Desc" : "",
+    "Haptics_IntensityOptions_ControlTask_Title" : "Control",
+    "Haptics_IntensityOptions_AnticipationTask_Title" : "Anticipation",
+    "Haptics_IntensityOptions_BuildTask_Title" : "Build",
+	"Haptics_IntensityOptions_SustainTask_Title" : "Sustain",
+	"Haptics_IntensityOptions_FadeTask_Title" : "Fade",
+	"Haptics_IntensityOptions_NoReturn_Task_Title" : "Point of No Return",
+	"Haptics_IntensityOptions_Phalanx_Task_Title" : "Captian Winters' Phalanx"
+}

@@ -2,12 +2,10 @@
 	"name": "Heister's Haptics",
 	"description": "Buttplug <https://buttplug.io/> integration into Payday 2.",
 	"author": "Siri",
+	"contact" : "siri1999kira (at) yahoo (dot) co (dot) jp",
 	"version": "0.1",
 	"blt_version": 2,
-	"pre_hooks": [
-		{
-			"hook_id": "lib/units/enemies/cop/copmovement",
-			"script_path": "mod.lua"
-		}
-	]
+    "pre_hooks" : [
+        { "hook_id" : "lib/entry", "script_path" : "Core.lua" }
+    ]
 }
