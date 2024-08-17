@@ -1,118 +1,109 @@
 if not ModCore then
-	log("[Haptics - ERROR] Unable to find ModCore from BeardLib! Is BeardLib installed correctly?")
-	return
+    log("[Haptics - ERROR] Unable to find ModCore from BeardLib! Is BeardLib installed correctly?")
+    return
 end
 
-function read_file(path) 
-	local file = io.open(path, "r") -- r read mode and b binary mode
-    if not file then return nil end
-    local content = file:read "*a" -- *a or *all reads the whole file
-    file:close()
-    return content
-end
-
-function lines(s) 
-	if s:sub(-1)~="\n" then s=s.."\n" end
-        return s:gmatch("(.-)\n")
-end
-
-function remove_comments(s)
-	local script = ""
-	for line in lines(s) do
-		script = script .. line:gsub("%-%-[^\n]+", "") .. "\n"
-	end
-	return script
-end
-
-function include (file_name) 
-    -- note if theres comments in the file it wont work lolz 
-	local f = remove_comments(assert(read_file(file_name)))
-	-- log(f)
-    return assert(loadstring(f))()
-end 
-
+---@class HapticsCore
 HapticsCore = HapticsCore or class(ModCore)
 
 function HapticsCore:init()
-	-- include(ModPath .. "test.lua")
-	-- require("test")
+    -- Calling the base function for init from ModCore
+    -- self_tbl, config path, auto load modules, auto post init modules
+    self.super.init(self, ModPath .. "config.xml", true, true)
 
-	--Calling the base function for init from ModCore
-	--self_tbl, config path, auto load modules, auto post init modules
-	self.super.init(self, ModPath .. "config.xml", true, true)
+    ---@class hapticslib
+    ---@field public connectHaptics fun(websocket_address: string): string @Connects thread to websocket
+    ---@field public ping fun(): string @Checks if the thread is still alive
+    ---@field public scanStart fun(): string @Starts scanning Intiface for devices
+    ---@field public scanStop fun(): string @Stops scanning Intiface for devices
+    ---@field public setStrength fun(strength: integer): string @Sets the vibration strength for all connected devices
+    ---@field public stopAll fun(): string @Stops vibration on all connected devices
 
-	log("test")
+    ---@type string
+    ---@type hapticslib
+    local err, hapticslib = blt.load_native(ModPath .. "hapticslib.dll")
+    if err ~= nil then
+        log(err)
+        return
+    end
 
-	local function start_buttplug()
-	-- local HAPTICS_buttplug = include(ModPath .. "buttplug-lua/buttplug.lua")
-	
-	-- 	-- Ask for the device list after we connect
-	-- 	table.insert(HAPTICS_buttplug.cb.ServerInfo, function()
-	-- 		HAPTICS_buttplug.request_device_list()
-	-- 	end)
-	
-	-- 	-- Start scanning if the device list was empty
-	-- 	table.insert(HAPTICS_buttplug.cb.DeviceList, function()
-	-- 		if HAPTICS_buttplug.count_devices() == 0 then
-	-- 			HAPTICS_buttplug.start_scanning()
-	-- 		end
-	-- 	end)
-	
-	-- 	-- Stop scanning after the first device is found
-	-- 	table.insert(HAPTICS_buttplug.cb.DeviceAdded, function()
-	-- 		HAPTICS_buttplug.stop_scanning()
-	-- 	end)
-	
-	-- 	-- Start scanning if we lose a device
-	-- 	table.insert(HAPTICS_buttplug.cb.DeviceRemoved, function()
-	-- 		HAPTICS_buttplug.start_scanning()
-	-- 	end)
-	
-	-- 	HAPTICS_buttplug.connect("pd2-haptics", "ws://127.0.0.1:12345")
-	-- return HAPTICS_buttplug
-	end
+    ---@type hapticslib @Not supposed to be used from outside of HapticsCore.
+    HapticsCore["hapticslib"] = hapticslib
 
-	local openPop = assert(io.popen('calc.exe', 'r'))
-	local output = openPop:read('*all')
-	openPop:close()
+    ---@type string @ID used for Assault State network communication
+    HapticsCore["network_id"] = "Haptics_Net"
 
-	HapticsCore["network_id"] = "Haptics_Net"
-	HapticsCore["buttplug"] = start_buttplug()
-	
-	self:set_options()
+    self:set_options()
 
-	log(
-		tostring(HapticsCore["network_id"]) .. ", " ..
-	--	tostring(HapticsCore["buttplug"]) .. ", " ..
-		tostring(HapticsCore["haptics_enabled"]) .. ", " ..
-		tostring(HapticsCore["strengths"]) .. ", " ..
-	"")
+    ---@type boolean @Set if HapticsCore:init() successfully finished initializing
+    HapticsCore["initialized"] = true;
+end
 
-	HapticsCore["initialised"] = true;
+---Connects the Heister's Haptics client to the Intiface Websocket.
+---Takes on parameter which is the websocket address.
+---This includes an IP and a port.
+---@param self HapticsCore
+---@param websocket_address string @Example `127.0.0.1:12345`
+---@return string @Success or failure message
+function HapticsCore:ConnectHaptics(websocket_address)
+    return self.hapticslib.connectHaptics(websocket_address)
+end
+
+---Pings the Heister's Haptics thread to see if it, and it's connection to Intiface, are still alive.
+---@return string @Success or failure message
+function HapticsCore:Ping()
+    return self.hapticslib.ping()
+end
+
+---Starts scanning for haptic devices in Intiface.
+---@return string @Success or failure message
+function HapticsCore:ScanStart()
+    return self.hapticslib.scanStart()
+end
+
+---Stops scanning for haptic devices in Intiface.
+---@return string @Success or failure message
+function HapticsCore:ScanStop()
+    return self.hapticslib.scanStop()
+end
+
+---Sets the vibration strength of all connected devices to the strength specified in the parameter.
+---Strength is in percent.
+---@return string @Success or failure message
+---@param strength integer @Value expected to be between 0 and 100
+function HapticsCore:SetStrength(strength)
+    return self.hapticslib.setStrength(strength)
+end
+
+---Sets the vibration strength of all connected devices to 0.
+---Therefor stopping them all.
+---@return string @Success or failure message
+function HapticsCore:StopAll()
+    return self.hapticslib.stopAll()
 end
 
 function HapticsCore:set_options()
-	if haptics and haptics.Options then
-		HapticsCore["haptics_enabled"] = haptics.Options:GetValue("Basic/enable_feedback")
-		HapticsCore["strengths"] = {
-			control = haptics.Options:GetValue("Intensity/control_strength"),
-			anticipation = haptics.Options:GetValue("Intensity/anticipation_strength"),
-			build = haptics.Options:GetValue("Intensity/build_strength"),
-			sustain = haptics.Options:GetValue("Intensity/sustain_strength"),
-			fade = haptics.Options:GetValue("Intensity/fade_strength"),
-			no_return = haptics.Options:GetValue("Intensity/no_return_strength"),
-			phalanx = haptics.Options:GetValue("Intensity/phalanx_strength")
-		}
-	else
-		log("[Haptics - ERROR] Something went wrong... Couldn't load options")
-	end
+    if haptics and haptics.Options then
+        HapticsCore["haptics_enabled"] = haptics.Options:GetValue("Basic/enable_feedback")
+        HapticsCore["strengths"] = {
+            control = haptics.Options:GetValue("Intensity/control_strength"),
+            anticipation = haptics.Options:GetValue("Intensity/anticipation_strength"),
+            build = haptics.Options:GetValue("Intensity/build_strength"),
+            sustain = haptics.Options:GetValue("Intensity/sustain_strength"),
+            fade = haptics.Options:GetValue("Intensity/fade_strength"),
+            no_return = haptics.Options:GetValue("Intensity/no_return_strength"),
+            phalanx = haptics.Options:GetValue("Intensity/phalanx_strength")
+        }
+    else
+        log("[Haptics - ERROR] Something went wrong... Couldn't load options")
+    end
 end
 
-log(tostring(HapticsCore))
-
-if not HapticsCore["initialised"] then
-	local success, err = pcall(function() HapticsCore:new() end)
-	if not success then
-		log("[Haptics - ERROR] An error occured on the initialization of the mod: " .. tostring(err))
-	end
+if not HapticsCore.initialized then
+    local success, err = pcall(function()
+        HapticsCore:new()
+    end)
+    if not success then
+        log("[Haptics - ERROR] An error occured on the initialization of the mod: " .. tostring(err))
+    end
 end
