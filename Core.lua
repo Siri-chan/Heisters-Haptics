@@ -68,7 +68,7 @@ function HapticsCore:ScanStop()
 end
 
 ---Sets the vibration strength of all connected devices to the strength specified in the parameter.
----Strength is in percent.
+---Strength is set in percent.
 ---@return string @Success or failure message
 ---@param strength integer @Value expected to be between 0 and 100
 function HapticsCore:SetStrength(strength)
@@ -76,7 +76,7 @@ function HapticsCore:SetStrength(strength)
 end
 
 ---Sets the vibration strength of all connected devices to 0.
----Therefor stopping them all.
+---Therefore stopping them all.
 ---@return string @Success or failure message
 function HapticsCore:StopAll()
     return self.hapticslib.stopAll()
