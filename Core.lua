@@ -40,7 +40,7 @@ function HapticsCore:init()
 end
 
 ---Connects the Heister's Haptics client to the Intiface Websocket.
----Takes on parameter which is the websocket address.
+---Takes one parameter which is the websocket address.
 ---This includes an IP and a port.
 ---@param self HapticsCore
 ---@param websocket_address string @Example `127.0.0.1:12345`
