@@ -12,6 +12,8 @@
 
     <Localization directory="loc" default="english.json" />
 
+
+<!--
     <Options name="Options" auto_build_menu="true" auto_load="true">
         <options title_id="Haptics_Options_Title" desc_id="Haptics_Options_Desc" >
             <merge_data area_bg="half"/>
@@ -32,7 +34,36 @@
             </option_group>
         </options>
     </Options>
+-->
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
     
     <!--
     <Options name="Options" auto_build_menu="true" auto_load="true">
