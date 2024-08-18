@@ -1,6 +1,6 @@
 <mod name="haptics" global_key="haptics">
     <Hooks directory="lua/Hooks">
-        <hook file="GroupAIStateBeSiege.lua" source_file="lib/managers/group_ai_states/groupaistatebesiege"/>
+        <!-- <hook file="GroupAIStateBeSiege.lua" source_file="lib/managers/group_ai_states/groupaistatebesiege"/> -->
     </Hooks>
 
     <!-- todo once i have this working, create a "stable" branch or smth -->

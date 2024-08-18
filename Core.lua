@@ -10,7 +10,11 @@ function HapticsCore:init()
     -- Calling the base function for init from ModCore
     -- self_tbl, config path, auto load modules, auto post init modules
     self.super.init(self, ModPath .. "config.xml", true, true)
+
+    ---@type string @/mods/Heisters Haptics
     HapticsCore["_mod_path"] = ModPath
+    ---@type string @/mods/Heisters Haptics/lua/gamemodes
+    HapticsCore["_gamemodes_path"] = Path:Combine(ModPath, "lua/gamemodes")
 
     ---@class hapticslib
     ---@field public connectHaptics fun(websocket_address: string): string @Connects thread to websocket
@@ -44,13 +48,17 @@ function HapticsCore:init()
             HapticsCore.CreateMenuItems()
         end,
         use_default_close_key = true,
-        layer = 500000
+        layer = 500
     })
 
     ---@type boolean @Set if HapticsCore:init() successfully finished initializing
     HapticsCore["initialized"] = true;
+
+    -- After initializing we can start doing more stuff like loading GameModes (name not final)
+    blt.vm.dofile(ModPath .. "lua/GameModeLoader.lua")
 end
 
+--- Creates the Options Menu for Heister's Haptics with beardlib's MenuUI
 function HapticsCore:CreateMenuItems()
     -- Needs to be done here becase it's not initialized before this callback is called
     HapticsCore["scaled_render_size"] = HapticsCore.scaled_render_size or managers.gui_data:full_scaled_size()
@@ -82,7 +90,6 @@ function HapticsCore:CreateMenuItems()
         value = HapticsCore["haptics_enabled"],
         on_callback = function(item)
             HapticsCore["haptics_enabled"] = item:Value()
-            
         end
     })
 
@@ -165,6 +172,7 @@ function HapticsCore:StopAll()
     return self.hapticslib.stopAll()
 end
 
+--- Saves the settings set in the menu to a "settings.json" file
 function HapticsCore:SaveSettings()
     log("saving")
     local settings = {
@@ -183,11 +191,13 @@ function HapticsCore:SaveSettings()
     FileIO:WriteScriptData(HapticsCore["_mod_path"] .. "settings.json", settings, "json", false)
 
 end
-function HapticsCore:LoadSettings() 
+
+--- Load saved settings from the "settings.json" file
+function HapticsCore:LoadSettings()
     if not FileIO:Exists(HapticsCore["_mod_path"] .. "settings.json") then
         HapticsCore:DefaultSettings()
-		return false
-	end
+        return false
+    end
     local settings = FileIO:ReadScriptData(ModPath .. "settings.json", "json", false)
     HapticsCore["haptics_enabled"] = settings.enabled
     HapticsCore["websocket"] = settings.websocket_uri
@@ -200,6 +210,8 @@ function HapticsCore:LoadSettings()
     HapticsCore["strengths"].no_return = settings.strengths.no_return
     HapticsCore["strengths"].phalanx = settings.strengths.phalanx
 end
+
+--- Sets reasonable and necessary defaults
 function HapticsCore:DefaultSettings()
     HapticsCore["haptics_enabled"] = false
     HapticsCore["websocket"] = "localhost:12345"
@@ -223,9 +235,10 @@ if not HapticsCore.initialized then
     end
 end
 
+-- Adds our MenuUI menu to the "Mod Options" entry in the settings menu option
 Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_HeistersHaptics", function(menu_manager, nodes)
+    -- Only need an open callback because closing is handled inside the menu
     MenuCallbackHandler.OpenHeistersHapticsModOptions = function(self, item)
-        log(HapticsCore["_menu"])
         if HapticsCore["_menu"] then
             HapticsCore["_menu"]:Enable()
         end
