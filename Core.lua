@@ -21,8 +21,8 @@ function HapticsCore:init()
     ---@field public ping fun(): string @Checks if the thread is still alive
     ---@field public scanStart fun(): string @Starts scanning Intiface for devices
     ---@field public scanStop fun(): string @Stops scanning Intiface for devices
-    ---@field public setStrength fun(strength: integer): string @Sets the vibration strength for all connected devices
     ---@field public stopAll fun(): string @Stops vibration on all connected devices
+    ---@field public vibrate fun(strength: integer): string @Sets the vibration strength for all connected devices
 
     ---@type string
     ---@type hapticslib
@@ -157,19 +157,19 @@ function HapticsCore:ScanStop()
     return self.hapticslib.scanStop()
 end
 
----Sets the vibration strength of all connected devices to the strength specified in the parameter.
----Strength is set in percent.
----@return string @Success or failure message
----@param strength integer @Value expected to be between 0 and 100
-function HapticsCore:SetStrength(strength)
-    return self.hapticslib.setStrength(strength)
-end
-
 ---Sets the vibration strength of all connected devices to 0.
 ---Therefore stopping them all.
 ---@return string @Success or failure message
 function HapticsCore:StopAll()
     return self.hapticslib.stopAll()
+end
+
+---Sets the vibration strength of all connected devices to the strength specified in the parameter.
+---Strength is set in percent.
+---@return string @Success or failure message
+---@param strength integer @Value expected to be between 0 and 100
+function HapticsCore:Vibrate(strength)
+    return self.hapticslib.vibrate(strength)
 end
 
 --- Saves the settings set in the menu to a "settings.json" file

@@ -1,3 +1,4 @@
 [submodule "hapticslib"]
 	path = hapticslib
 	url = https://github.com/yupiel/hapticslib
+	branch = haptics-connection
