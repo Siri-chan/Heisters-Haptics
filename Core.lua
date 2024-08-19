@@ -21,6 +21,7 @@ function HapticsCore:init()
     ---@field public ping fun(): string @Checks if the thread is still alive
     ---@field public scanStart fun(): string @Starts scanning Intiface for devices
     ---@field public scanStop fun(): string @Stops scanning Intiface for devices
+    ---@field public listDevices fun(): table @Returns a list of connected devices
     ---@field public stopAll fun(): string @Stops vibration on all connected devices
     ---@field public vibrate fun(strength: integer): string @Sets the vibration strength for all connected devices
 
@@ -136,32 +137,39 @@ end
 ---@param websocket_address string @Example `127.0.0.1:12345`
 ---@return string @Success or failure message
 function HapticsCore:ConnectHaptics(websocket_address)
-    return self.hapticslib.connectHaptics(websocket_address)
+    return HapticsCore.hapticslib:connectHaptics(websocket_address)
 end
 
 ---Pings the Heister's Haptics thread to see if it, and it's connection to Intiface, are still alive.
 ---@return string @Success or failure message
 function HapticsCore:Ping()
-    return self.hapticslib.ping()
+    return HapticsCore.hapticslib:ping()
 end
 
 ---Starts scanning for haptic devices in Intiface.
 ---@return string @Success or failure message
 function HapticsCore:ScanStart()
-    return self.hapticslib.scanStart()
+    return HapticsCore.hapticslib:scanStart()
 end
 
 ---Stops scanning for haptic devices in Intiface.
 ---@return string @Success or failure message
 function HapticsCore:ScanStop()
-    return self.hapticslib.scanStop()
+    return HapticsCore.hapticslib:scanStop()
+end
+
+---Returns an array (table) of device names currently known by HapticsCore.
+---Keys are numbered starting with 1 as is standard in lua.
+---@return table @Array of device names
+function HapticsCore:ListDevices()
+    return HapticsCore.hapticslib:listDevices()
 end
 
 ---Sets the vibration strength of all connected devices to 0.
 ---Therefore stopping them all.
 ---@return string @Success or failure message
 function HapticsCore:StopAll()
-    return self.hapticslib.stopAll()
+    return HapticsCore.hapticslib:stopAll()
 end
 
 ---Sets the vibration strength of all connected devices to the strength specified in the parameter.
@@ -169,7 +177,7 @@ end
 ---@return string @Success or failure message
 ---@param strength integer @Value expected to be between 0 and 100
 function HapticsCore:Vibrate(strength)
-    return self.hapticslib.vibrate(strength)
+    return HapticsCore.hapticslib:vibrate(strength)
 end
 
 --- Saves the settings set in the menu to a "settings.json" file
