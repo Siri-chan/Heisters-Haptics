@@ -7,14 +7,12 @@ end
 HapticsCore = HapticsCore or class(ModCore)
 
 function HapticsCore:init()
-    -- Calling the base function for init from ModCore
-    -- self_tbl, config path, auto load modules, auto post init modules
-    self.super.init(self, ModPath .. "config.xml", true, true)
-
     ---@type string @/mods/Heisters Haptics
     HapticsCore["_mod_path"] = ModPath
+    ---@type string @modes
+    HapticsCore["_hapticsmode_folder"] = "modes"
     ---@type string @/mods/Heisters Haptics/lua/gamemodes
-    HapticsCore["_gamemodes_path"] = Path:Combine(ModPath, "lua/gamemodes")
+    HapticsCore["_hapticsmode_path"] = Path:Combine(HapticsCore._mod_path, HapticsCore._hapticsmode_folder)
 
     ---@class hapticslib
     ---@field public connectHaptics fun(websocket_address: string): string @Connects thread to websocket
@@ -27,7 +25,7 @@ function HapticsCore:init()
 
     ---@type string
     ---@type hapticslib
-    local err, hapticslib = blt.load_native(ModPath .. "hapticslib.dll")
+    local err, hapticslib = blt.load_native(Path:Combine(HapticsCore._mod_path, "hapticslib.dll"))
     if not hapticslib then
         log("[Haptics - ERROR] hapticslib failed to load with " .. err .. ".")
         return
@@ -39,6 +37,10 @@ function HapticsCore:init()
 
     ---@type string @ID used for Assault State network communication
     HapticsCore["network_id"] = "Haptics_Net"
+
+    -- Calling the base function for init from ModCore after setting some variables
+    -- self_tbl, config path, auto load modules, auto post init modules
+    self.super.init(self, ModPath .. "config.xml", true, true)
 
     -- self:set_options()
 
@@ -55,8 +57,14 @@ function HapticsCore:init()
     ---@type boolean @Set if HapticsCore:init() successfully finished initializing
     HapticsCore["initialized"] = true;
 
-    -- After initializing we can start doing more stuff like loading GameModes (name not final)
-    blt.vm.dofile(ModPath .. "lua/GameModeLoader.lua")
+    -- Initialize custom Haptics Hooks
+    blt.vm.dofile(ModPath .. "lua/HapticsHook.lua")
+    -- After initializing Hooks we can start doing more stuff like loading Haptics Modes
+    blt.vm.dofile(ModPath .. "lua/HapticsMode.lua")
+end
+
+function HapticsCore:GetPath()
+    return HapticsCore._mod_path
 end
 
 --- Creates the Options Menu for Heister's Haptics with beardlib's MenuUI
@@ -234,7 +242,27 @@ function HapticsCore:DefaultSettings()
     HapticsCore["strengths"].phalanx = 0
 end
 
-if not HapticsCore.initialized then
+---Clones an entire function with upvalues (thanks luajit)
+---@param func function @The function to clone
+---@return function @Returns the cloned function
+function HapticsCore:CloneFunction(func)
+    local func_string = string.dump(func)
+    local cloned_func = loadstring(func_string)
+    local i = 1
+
+    while true do
+        local name = debug.getupvalue(func, i)
+        if not name then
+            break
+        end
+        debug.upvaluejoin(cloned_func, i, func, i)
+        i = i + 1
+    end
+
+    return cloned_func
+end
+
+if not _G.HapticsCore.initialized then
     local success, err = pcall(function()
         HapticsCore:new()
     end)
