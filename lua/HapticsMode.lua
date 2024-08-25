@@ -5,7 +5,6 @@ function HapticsMode:Init()
 
     HapticsMode["initialized"] = true
 
-    HapticsMode:SearchGameModes()
     -- HapticsMode:DisableGameMode("default")
 end
 
@@ -40,7 +39,9 @@ function HapticsMode:RegisterGameMode(haptics_mode_file_name)
     if not HapticsMode._modes[current_mode_id] then
         HapticsMode._modes[current_mode_id] = {
             enabled = true,
-            hooks = {}
+            hooks = {},
+            menus = sandbox_env.config.menus,
+            name = sandbox_env.config.name
         }
 
         for hook_src_file, hook_table in pairs(sandbox_env.config.hooks.post) do

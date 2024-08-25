@@ -17,14 +17,14 @@ config = {
     menus = {{
         type = "slider",
         id = "AnticipationInput",
-        text = "Vibration Strength - Anticipation State",
+        text = "Anticipation State",
         default = 0,
         min = 0,
         max = 100
     }, {
         type = "slider",
         id = "BuildInput",
-        text = "Vibration Strength - Build State",
+        text = "Build State",
         default = 0,
         min = 0,
         max = 100

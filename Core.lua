@@ -59,7 +59,10 @@ function HapticsCore:init()
 
     -- Initialize custom Haptics Hooks
     blt.vm.dofile(ModPath .. "lua/HapticsHook.lua")
-    -- After initializing Hooks we can start doing more stuff like loading Haptics Modes
+
+    -- Initialize the UI creation component for modes
+    blt.vm.dofile(ModPath .. "lua/HapticsModeUI.lua")
+    -- After initializing Hooks and Modes UI we can start doing more stuff like loading Haptics Modes
     blt.vm.dofile(ModPath .. "lua/HapticsMode.lua")
 end
 
@@ -114,6 +117,23 @@ function HapticsCore:CreateMenuItems()
     })
 
     HapticsCore._sidebar:Button({
+        name = "SearchModes",
+        text = "Search Modes",
+        localized = false,
+        size_by_text = true,
+        on_callback = function(item)
+            HapticsMode:SearchGameModes()
+            HapticsModeUI:Parse("default", HapticsMode._modes.default.menus)
+        end
+    })
+
+    HapticsCore["mode_stash"] = HapticsCore._sidebar:Holder({
+        name = "mode_stash",
+        background_alpha = 0,
+        min_height = HapticsCore.scaled_render_size.h / 5
+    })
+
+    HapticsCore._sidebar:Button({
         name = "SaveAndClose",
         text = "Haptics_Options_SaveExit",
         localized = true,
@@ -136,6 +156,7 @@ function HapticsCore:CreateMenuItems()
         position = "BottomLeft",
         layer = 2
     })
+
 end
 
 ---Connects the Heister's Haptics client to the Intiface Websocket.
@@ -262,7 +283,7 @@ function HapticsCore:CloneFunction(func)
     return cloned_func
 end
 
-if not _G.HapticsCore.initialized then
+if not HapticsCore.initialized then
     local success, err = pcall(function()
         HapticsCore:new()
     end)

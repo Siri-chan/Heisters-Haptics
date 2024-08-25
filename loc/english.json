@@ -8,6 +8,8 @@
 	"Haptics_Options_EnableFeedback_Title" : "Enable Haptic Feedback",
 	"Haptics_Options_Websocket_Desc" : "The URI which your Buttplug Server is listening on.\nYou should be able to omit the 'ws://' at the beginning.",
 	"Haptics_Options_Websocket_Title" : "WebSocket URI",
+	
+	"Haptics_Options_Modes_Search" : "Search Modes",
 
     "Haptics_IntensityOptions_SubTitle" : "Vibration Intensities",
 	"Haptics_IntensityOptions_SubDesc" : "Change the Intensity with which your vibrator vibrates.",
