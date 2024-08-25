@@ -6,6 +6,16 @@ function HapticsModeUI:Init()
     HapticsModeUI["initialized"] = true
 end
 
+local function HapticsClamp(num)
+    if num < 0 then
+        return 0
+    end
+    if num > 100 then
+        return 100
+    end
+    return num
+end
+
 ---@param mode_id string @Id of the HapticsMode
 ---@param mode_menus_table table @Table of menu items to create
 function HapticsModeUI:Parse(mode_id, mode_menus_table)
@@ -33,10 +43,10 @@ function HapticsModeUI:CreateSlider(mode_id, mode_ui_item)
         -- Maybe add the mode id in front like modeid_sliderid
         name = mode_ui_item.id,
         text = mode_ui_item.text,
-        -- Default these and make sure 
-        value = mode_ui_item.default or 0,
-        min = mode_ui_item.min or 0,
-        max = mode_ui_item.max or 100,
+        -- Default these and make sure they are in a reasonable range
+        value = mode_ui_item.default and HapticsClamp(mode_ui_item.default) or 0,
+        min = mode_ui_item.min and HapticsClamp(mode_ui_item.min) or 0,
+        max = mode_ui_item.max and HapticsClamp(mode_ui_item.max) or 100,
         -- We don't need decimals
         step = 1,
         floats = 0,
