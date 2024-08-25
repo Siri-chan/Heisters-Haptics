@@ -5,9 +5,10 @@ function HapticsHook:Init()
         pre = {},
         post = {}
     }
+
     HapticsHook["_blt_run_hook_table"] = _G.BLT["RunHookTable"]
 
-    HapticsHook:OverrideBLTRunHooksTable()
+    HapticsHook:OverrideBLTRunHookTable()
 
     HapticsHook["initialized"] = true
 end
@@ -18,7 +19,10 @@ function HapticsHook:AddPostHook(source_file, hook_id, hook_function)
     end
 
     if not HapticsHook._hooks.post[source_file][hook_id] then
-        HapticsHook._hooks.post[source_file][hook_id] = hook_function
+        HapticsHook._hooks.post[source_file][hook_id] = {
+            enabled = true,
+            func = hook_function
+        }
     end
 end
 
@@ -34,7 +38,10 @@ function HapticsHook:AddPreHook(source_file, hook_id, hook_function)
     end
 
     if not HapticsHook._hooks.pre[source_file][hook_id] then
-        HapticsHook._hooks.pre[source_file][hook_id] = hook_function
+        HapticsHook._hooks.pre[source_file][hook_id] = {
+            enabled = true,
+            func = hook_function
+        }
     end
 end
 
@@ -56,7 +63,7 @@ function HapticsHook:RemoveHook(hook_id, pre)
     end
 end
 
-function HapticsHook:OverrideBLTRunHooksTable()
+function HapticsHook:OverrideBLTRunHookTable()
     _G.BLT["RunHookTable"] = HapticsHook["RunHookTable"]
 end
 
@@ -68,6 +75,7 @@ function HapticsHook:RunHookTable(hooks_table, path)
         end
     elseif hooks_table == BLT.hook_tables.post then
         if HapticsHook._hooks.post and HapticsHook._hooks.post[path] then
+            log("We're doing post hook")
             HapticsHook:RunHookFunctions(path, false)
         end
     end
@@ -77,8 +85,30 @@ function HapticsHook:RunHookTable(hooks_table, path)
 end
 
 function HapticsHook:RunHookFunctions(source_file, pre)
-    for _, hook_func in pairs(HapticsHook._hooks[pre and "pre" or "post"][source_file]) do
-        hook_func()
+    log("runHookfunc")
+    for _, hook_data in pairs(HapticsHook._hooks[pre and "pre" or "post"][source_file]) do
+        log(hook_data.enabled)
+        if hook_data.enabled then
+            hook_data.func()
+        end
+    end
+end
+
+function HapticsHook:EnableHook(source_file, hook_id)
+    HapticsHook:ChangeHookState(source_file, hook_id, true)
+end
+
+function HapticsHook:DisableHook(source_file, hook_id)
+    HapticsHook:ChangeHookState(source_file, hook_id, false)
+end
+
+function HapticsHook:ChangeHookState(source_file, hook_id, enabled)
+    if HapticsHook._hooks.pre[source_file] and HapticsHook._hooks.pre[source_file][hook_id] then
+        HapticsHook._hooks.pre[source_file][hook_id].enabled = enabled
+    end
+
+    if HapticsHook._hooks.post[source_file] and HapticsHook._hooks.post[source_file][hook_id] then
+        HapticsHook._hooks.post[source_file][hook_id].enabled = enabled
     end
 end
 

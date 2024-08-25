@@ -14,24 +14,21 @@ config = {
                 }]] }
         }
     },
-    menus = {
-        anticipation = {
-            type = "slider",
-            id = "AnticipationInput",
-            text = "Vibration Strength - Anticipation State",
-            default_value = 0,
-            min = 0,
-            max = 100
-        },
-        build = {
-            type = "slider",
-            id = "BuildInput",
-            text = "Vibration Strength - Build State",
-            default_value = 0,
-            min = 0,
-            max = 100
-        }
-    }
+    menus = {{
+        type = "slider",
+        id = "AnticipationInput",
+        text = "Vibration Strength - Anticipation State",
+        default = 0,
+        min = 0,
+        max = 100
+    }, {
+        type = "slider",
+        id = "BuildInput",
+        text = "Vibration Strength - Build State",
+        default = 0,
+        min = 0,
+        max = 100
+    }}
 }
 
 function love_message()
