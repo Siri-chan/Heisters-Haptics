@@ -14,7 +14,7 @@ function HapticsCore:init()
     ---@type string @/mods/Heisters Haptics/lua/gamemodes
     HapticsCore["_hapticsmode_path"] = Path:Combine(HapticsCore._mod_path, HapticsCore._hapticsmode_folder)
 
-    ---@class hapticslib
+    ---@class hapticslib @The native plugin module that actually controls the haptic devices
     ---@field public connectHaptics fun(websocket_address: string): string @Connects thread to websocket
     ---@field public ping fun(): string @Checks if the thread is still alive
     ---@field public scanStart fun(): string @Starts scanning Intiface for devices
@@ -48,7 +48,7 @@ function HapticsCore:init()
         name = "HeistersHapticsSettings",
         enabled = false,
         create_items = function()
-            HapticsCore.CreateMenuItems()
+            HapticsCore:CreateMenuItems()
         end,
         use_default_close_key = true,
         layer = 500
@@ -166,39 +166,39 @@ end
 ---@param websocket_address string @Example `127.0.0.1:12345`
 ---@return string @Success or failure message
 function HapticsCore:ConnectHaptics(websocket_address)
-    return HapticsCore.hapticslib:connectHaptics(websocket_address)
+    return HapticsCore.hapticslib.connectHaptics(websocket_address)
 end
 
 ---Pings the Heister's Haptics thread to see if it, and it's connection to Intiface, are still alive.
 ---@return string @Success or failure message
 function HapticsCore:Ping()
-    return HapticsCore.hapticslib:ping()
+    return HapticsCore.hapticslib.ping()
 end
 
 ---Starts scanning for haptic devices in Intiface.
 ---@return string @Success or failure message
 function HapticsCore:ScanStart()
-    return HapticsCore.hapticslib:scanStart()
+    return HapticsCore.hapticslib.scanStart()
 end
 
 ---Stops scanning for haptic devices in Intiface.
 ---@return string @Success or failure message
 function HapticsCore:ScanStop()
-    return HapticsCore.hapticslib:scanStop()
+    return HapticsCore.hapticslib.scanStop()
 end
 
 ---Returns an array (table) of device names currently known by HapticsCore.
 ---Keys are numbered starting with 1 as is standard in lua.
 ---@return table @Array of device names
 function HapticsCore:ListDevices()
-    return HapticsCore.hapticslib:listDevices()
+    return HapticsCore.hapticslib.listDevices()
 end
 
 ---Sets the vibration strength of all connected devices to 0.
 ---Therefore stopping them all.
 ---@return string @Success or failure message
 function HapticsCore:StopAll()
-    return HapticsCore.hapticslib:stopAll()
+    return HapticsCore.hapticslib.stopAll()
 end
 
 ---Sets the vibration strength of all connected devices to the strength specified in the parameter.
@@ -206,7 +206,7 @@ end
 ---@return string @Success or failure message
 ---@param strength integer @Value expected to be between 0 and 100
 function HapticsCore:Vibrate(strength)
-    return HapticsCore.hapticslib:vibrate(strength)
+    return HapticsCore.hapticslib.vibrate(strength)
 end
 
 --- Saves the settings set in the menu to a "settings.json" file
