@@ -64,6 +64,8 @@ function HapticsCore:init()
     blt.vm.dofile(ModPath .. "lua/HapticsModeUI.lua")
     -- After initializing Hooks and Modes UI we can start doing more stuff like loading Haptics Modes
     blt.vm.dofile(ModPath .. "lua/HapticsMode.lua")
+
+    HapticsMode:SearchGameModes()
 end
 
 function HapticsCore:GetPath()
@@ -140,6 +142,11 @@ function HapticsCore:CreateMenuItems()
         size_by_text = true,
         on_callback = function(item)
             HapticsCore:SaveSettings()
+            if HapticsCore.haptics_enabled then
+                -- TODO: This crashes if you dont save the settings before loading into a game.
+                -- FIX ME
+                HapticsCore:ConnectHaptics(HapticsCore.websocket)
+            end
             HapticsCore["_menu"]:Disable()
         end,
         position = "BottomRight",
