@@ -42,8 +42,6 @@ function HapticsCore:init()
     -- self_tbl, config path, auto load modules, auto post init modules
     self.super.init(self, ModPath .. "config.xml", true, true)
 
-    -- self:set_options()
-
     HapticsCore["_menu"] = MenuUI:new({
         name = "HeistersHapticsSettings",
         enabled = false,
@@ -59,7 +57,6 @@ function HapticsCore:init()
 
     -- Initialize custom Haptics Hooks
     blt.vm.dofile(ModPath .. "lua/HapticsHook.lua")
-
     -- Initialize the UI creation component for modes
     blt.vm.dofile(ModPath .. "lua/HapticsModeUI.lua")
     -- After initializing Hooks and Modes UI we can start doing more stuff like loading Haptics Modes
@@ -222,18 +219,23 @@ function HapticsCore:SaveSettings()
     local settings = {
         enabled = HapticsCore["haptics_enabled"],
         websocket_uri = HapticsCore["websocket"],
-        strengths = {
-            control = HapticsCore["strengths"].control,
-            anticipation = HapticsCore["strengths"].anticipation,
-            build = HapticsCore["strengths"].build,
-            sustain = HapticsCore["strengths"].sustain,
-            fade = HapticsCore["strengths"].fade,
-            no_return = HapticsCore["strengths"].no_return,
-            phalanx = HapticsCore["strengths"].phalanx
-        }
+        strengths = {}
     }
-    FileIO:WriteScriptData(HapticsCore["_mod_path"] .. "settings.json", settings, "json", false)
 
+    for mode_id, mode_data in pairs(HapticsMode._modes) do
+        if mode_data.enabled then
+            local values = {}
+            for menu_item_id, menu_data in pairs(mode_data.menus) do
+                values[menu_item_id] = menu_data.value
+            end
+    
+            if not settings.strengths[mode_id] then
+                settings.strengths[mode_id] = values
+            end
+        end
+    end
+
+    FileIO:WriteScriptData(HapticsCore["_mod_path"] .. "settings.json", settings, "json", false)
 end
 
 --- Load saved settings from the "settings.json" file
@@ -245,14 +247,7 @@ function HapticsCore:LoadSettings()
     local settings = FileIO:ReadScriptData(ModPath .. "settings.json", "json", false)
     HapticsCore["haptics_enabled"] = settings.enabled
     HapticsCore["websocket"] = settings.websocket_uri
-    HapticsCore["strengths"] = {}
-    HapticsCore["strengths"].control = settings.strengths.control
-    HapticsCore["strengths"].anticipation = settings.strengths.anticipation
-    HapticsCore["strengths"].build = settings.strengths.build
-    HapticsCore["strengths"].sustain = settings.strengths.sustain
-    HapticsCore["strengths"].fade = settings.strengths.fade
-    HapticsCore["strengths"].no_return = settings.strengths.no_return
-    HapticsCore["strengths"].phalanx = settings.strengths.phalanx
+    HapticsCore["strengths"] = settings.strengths
 end
 
 --- Sets reasonable and necessary defaults
@@ -260,14 +255,6 @@ function HapticsCore:DefaultSettings()
     HapticsCore["haptics_enabled"] = false
     HapticsCore["websocket"] = "localhost:12345"
     HapticsCore["strengths"] = {}
-    -- TODO: Set actual defaults??
-    HapticsCore["strengths"].control = 0
-    HapticsCore["strengths"].anticipation = 0
-    HapticsCore["strengths"].build = 0
-    HapticsCore["strengths"].sustain = 0
-    HapticsCore["strengths"].fade = 0
-    HapticsCore["strengths"].no_return = 0
-    HapticsCore["strengths"].phalanx = 0
 end
 
 ---Clones an entire function with upvalues (thanks luajit)

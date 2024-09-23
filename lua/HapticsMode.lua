@@ -40,7 +40,7 @@ function HapticsMode:RegisterGameMode(haptics_mode_file_name)
         HapticsMode._modes[current_mode_id] = {
             enabled = true,
             hooks = {},
-            menus = sandbox_env.config.menus,
+            menus = {},
             name = sandbox_env.config.name
         }
 
@@ -61,6 +61,13 @@ function HapticsMode:RegisterGameMode(haptics_mode_file_name)
                     -- Save the hook for enable/disable
                     table.insert(HapticsMode._modes[current_mode_id].hooks[hook_src_file], current_hook_id)
                 end
+            end
+        end
+
+        for _, menu_item in pairs(sandbox_env.config.menus) do
+            if not HapticsMode._modes[current_mode_id].menus[menu_item.id] then
+                -- This will ensure using the id as a key and having it as part of the value
+                HapticsMode._modes[current_mode_id].menus[menu_item.id] = menu_item
             end
         end
     end
