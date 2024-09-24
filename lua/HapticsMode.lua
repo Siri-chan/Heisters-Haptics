@@ -3,6 +3,13 @@ HapticsMode = HapticsMode or class()
 function HapticsMode:Init()
     HapticsMode["_modes"] = {}
 
+    -- Create sliders once MenuUI is ready to render them
+    Hooks:Add("MenuManagerPostInitialize", "TestingLMaoIdk", function(menu_manager)
+        for mode_id, mode_data in pairs(HapticsMode._modes) do
+            HapticsModeUI:Parse(mode_id, mode_data.menus)
+        end
+    end)
+
     HapticsMode["initialized"] = true
 
     -- HapticsMode:DisableGameMode("default")
@@ -98,6 +105,14 @@ function HapticsMode:DisableGameMode(game_mode_id)
             HapticsHook:DisableHook(hook_src_file, hook_id)
         end
     end
+end
+
+function HapticsMode:GetMenuValue(mode_id, menu_item_id)
+    if HapticsMode._modes[mode_id].menus[menu_item_id] then
+        return HapticsMode._modes[mode_id].menus[menu_item_id].value
+    end
+
+    return 0
 end
 
 if not HapticsMode.initialized then

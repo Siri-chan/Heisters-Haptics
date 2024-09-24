@@ -122,7 +122,6 @@ function HapticsCore:CreateMenuItems()
         size_by_text = true,
         on_callback = function(item)
             HapticsMode:SearchGameModes()
-            HapticsModeUI:Parse("default", HapticsMode._modes.default.menus)
         end
     })
 
@@ -259,7 +258,7 @@ end
 
 ---Clones an entire function with upvalues (thanks luajit)
 ---@param func function @The function to clone
----@return function @Returns the cloned function
+---@return function? @Returns the cloned function
 function HapticsCore:CloneFunction(func)
     local func_string = string.dump(func)
     local cloned_func = loadstring(func_string)

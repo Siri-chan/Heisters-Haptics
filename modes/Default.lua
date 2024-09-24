@@ -70,14 +70,10 @@ function love_message()
     -- Safety Net.
     HapticsCore:StopAll()
 
-    function getMenuItemByID(id)
-        log("le epic debug")
-        for key, value in _G.pairs(_G.HapticsMode["_modes"].default.menus) do
-            log(value.id .. value.id)
-            
-            
-            if value.id == id then return value.default end
-        end
+    local function getMenuItemByID(id)
+        log("le epic debug getMenuItemByID")
+        log("Value: ", _G.HapticsMode:GetMenuValue("default", id))
+        return _G.HapticsMode:GetMenuValue("default", id)
         --[[
         local menus = HapticsMode["_modes"].default.menus
         for key, value in pairs(menus) do
@@ -86,17 +82,19 @@ function love_message()
         ]]
     end
 
+    local function vibrate(strength)
+        log("bzzz")
+        log("Called Vibrate with strength: ", strength)
+        -- HapticsCore:Vibrate(strength)
+    end
+
     Hooks:Add("NetworkReceivedData", "NetworkHaptics", function(sender, id, data)
         log("i got here network")
         local Net = _G.LuaNetworking
         local mod_key = HapticsCore["network_id"]
         if id == mod_key and HapticsCore["haptics_enabled"] then
-            local function vibrate(strength)
-                log("bzzz")
-                HapticsCore:Vibrate(strength)
-            end
-    
             if data == "control" then
+                log(getMenuItemByID("ControlInput"))
                 if managers.hud._hud_assault_corner._point_of_no_return then
                     -- Do the vibrator thing here.
                     vibrate(getMenuItemByID("NoReturnInput"))
@@ -108,7 +106,7 @@ function love_message()
                     -- managers.hud._hud_assault_corner:_update_assault_hud_color(get_assault_state_options("Color/color_controltask"))
                 end
             end
-    
+
             if data == "anticipation" then
                 vibrate(getMenuItemByID("AnticipationInput"))
                 -- Do the vibrator thing here.
@@ -116,21 +114,21 @@ function love_message()
                 -- managers.hud._hud_assault_corner:_set_hostage_offseted(true)
                 -- managers.hud._hud_assault_corner:_update_assault_hud_color(get_assault_state_options("Color/color_anticipationtask"))
             end
-    
+
             if data == "build" then
                 vibrate(getMenuItemByID("BuildInput"))
                 -- Do the vibrator thing here.
                 -- managers.hud._hud_assault_corner:_set_text_list(get_build_lines())
                 -- managers.hud._hud_assault_corner:_update_assault_hud_color(get_assault_state_options("Color/color_buildtask"))
             end
-    
+
             if data == "sustain" then
                 vibrate(getMenuItemByID("SustainInput"))
                 -- Do the vibrator thing here.
                 -- managers.hud._hud_assault_corner:_set_text_list(get_sustain_lines())
                 -- managers.hud._hud_assault_corner:_update_assault_hud_color(get_assault_state_options("Color/color_sustaintask"))
             end
-    
+
             if data == "fade" then
                 vibrate(getMenuItemByID("FadeInput"))
                 -- Do the vibrator thing here.
@@ -151,16 +149,11 @@ function love_message()
         local Net = _G.LuaNetworking
         local data_sender = false
         local mod_key = HapticsCore["network_id"]
-    
+
         if Net:IsHost() then
             data_sender = true
         end
-    
-        local function vibrate(strength)
-            log("bzzz")
-            HapticsCore:Vibrate(strength)
-        end
-    
+
         if not managers.hud._hud_assault_corner._assault then
             if managers.hud._hud_assault_corner._assault_mode == "phalanx" or self:get_hunt_mode() then
                 -- Do the vibrator thing here.
@@ -168,7 +161,7 @@ function love_message()
                 -- managers.hud._hud_assault_corner:_start_assault(get_control_lines())
                 -- managers.hud._hud_assault_corner:_update_assault_hud_color(get_assault_state_options("Color/color_controltask"))
                 -- managers.hud._hud_assault_corner:_set_hostage_offseted(true)
-    
+
                 if data_sender then
                     Net:SendToPeers(mod_key, "phalanx")
                 end
@@ -182,7 +175,7 @@ function love_message()
                     -- managers.hud._hud_assault_corner:_start_assault(get_control_lines())
                     -- managers.hud._hud_assault_corner:_update_assault_hud_color(get_assault_state_options("Color/color_controltask"))
                     -- managers.hud._hud_assault_corner:_set_hostage_offseted(true)
-    
+
                     if data_sender then
                         Net:SendToPeers(mod_key, "control")
                     end
@@ -196,25 +189,21 @@ function love_message()
         local Net = _G.LuaNetworking
         local data_sender = false
         local mod_key = HapticsCore["network_id"]
-    
+
         if Net:IsHost() then
             data_sender = true
         end
-    
-        local function vibrate(strength)
-            log("bzzz")
-            HapticsCore:Vibrate(strength)
-        end
-    
+
         local task_data = self._task_data.assault
-    
+
         if task_data.phase == "anticipation" then
-            if managers.hud._hud_assault_corner._assault_mode ~= "phalanx" and not managers.groupai:state():get_hunt_mode() then
+            if managers.hud._hud_assault_corner._assault_mode ~= "phalanx" and
+                not managers.groupai:state():get_hunt_mode() then
                 vibrate(getMenuItemByID("AnticipationInput"))
                 -- Do the vibrator thing here.
                 -- managers.hud._hud_assault_corner:_set_text_list(get_anticipation_lines())
                 -- managers.hud._hud_assault_corner:_update_assault_hud_color(get_assault_state_options("Color/color_anticipationtask"))
-    
+
                 if data_sender then
                     Net:SendToPeers(mod_key, "anticipation")
                 end
@@ -225,40 +214,40 @@ function love_message()
                 end
             end
         end
-    
+
         if task_data.phase == "build" and not managers.groupai:state():get_hunt_mode() then
             -- Do the vibrator thing here.
             vibrate(getMenuItemByID("BuildInput"))
             -- managers.hud._hud_assault_corner:_set_text_list(get_build_lines())
             -- managers.hud._hud_assault_corner:_update_assault_hud_color(get_assault_state_options("Color/color_buildtask"))
-    
+
             if data_sender then
                 Net:SendToPeers(mod_key, "build")
             end
         end
-    
+
         if task_data.phase == "sustain" and not managers.groupai:state():get_hunt_mode() then
             -- Do the vibrator thing here.
             vibrate(getMenuItemByID("SustainInput"))
             -- managers.hud._hud_assault_corner:_set_text_list(get_sustain_lines())
             -- managers.hud._hud_assault_corner:_update_assault_hud_color(get_assault_state_options("Color/color_sustaintask"))
-    
+
             if data_sender then
                 Net:SendToPeers(mod_key, "sustain")
             end
         end
-    
+
         if task_data.phase == "fade" and not managers.groupai:state():get_hunt_mode() then
             -- Do the vibrator thing here.
             vibrate(getMenuItemByID("FadeInput"))
             -- managers.hud._hud_assault_corner:_set_text_list(get_fade_lines())
             -- managers.hud._hud_assault_corner:_update_assault_hud_color(get_assault_state_options("Color/color_fadetask"))
-    
+
             if data_sender then
                 Net:SendToPeers(mod_key, "fade")
             end
         end
-    end)    
+    end)
 end
 
 -- Hooks:PostHook(GroupAIStateBesiege, "_upd_recon_tasks", "assaultstates_recon_function", function(self)
