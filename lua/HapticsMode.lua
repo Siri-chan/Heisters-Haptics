@@ -108,7 +108,7 @@ function HapticsMode:DisableGameMode(game_mode_id)
 end
 
 function HapticsMode:GetMenuValue(mode_id, menu_item_id)
-    if HapticsMode._modes[mode_id].menus[menu_item_id] then
+    if HapticsMode._modes[mode_id] and HapticsMode._modes[mode_id].menus[menu_item_id] then
         return HapticsMode._modes[mode_id].menus[menu_item_id].value
     end
 
