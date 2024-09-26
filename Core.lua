@@ -16,6 +16,7 @@ function HapticsCore:init()
 
     ---@class hapticslib @The native plugin module that actually controls the haptic devices
     ---@field public connectHaptics fun(websocket_address: string): string @Connects thread to websocket
+    ---@field public kill fun(): string @Kills the Haptics thread
     ---@field public ping fun(): string @Checks if the thread is still alive
     ---@field public scanStart fun(): string @Starts scanning Intiface for devices
     ---@field public scanStop fun(): string @Stops scanning Intiface for devices
@@ -172,6 +173,12 @@ function HapticsCore:ConnectHaptics(websocket_address)
     return HapticsCore.hapticslib.connectHaptics(websocket_address)
 end
 
+---Kills the Haptics Thread if it is running.
+---@return string @Success or failure message
+function HapticsCore:Kill()
+    return HapticsCore.hapticslib.kill()
+end
+
 ---Pings the Heister's Haptics thread to see if it, and it's connection to Intiface, are still alive.
 ---@return string @Success or failure message
 function HapticsCore:Ping()
@@ -227,7 +234,7 @@ function HapticsCore:SaveSettings()
             for menu_item_id, menu_data in pairs(mode_data.menus) do
                 values[menu_item_id] = menu_data.value
             end
-    
+
             if not settings.strengths[mode_id] then
                 settings.strengths[mode_id] = values
             end

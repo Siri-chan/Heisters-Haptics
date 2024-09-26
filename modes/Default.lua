@@ -85,7 +85,7 @@ function love_message()
     local function vibrate(strength)
         log("bzzz")
         log("Called Vibrate with strength: ", strength)
-        -- HapticsCore:Vibrate(strength)
+        HapticsCore:Vibrate(strength)
     end
 
     Hooks:Add("NetworkReceivedData", "NetworkHaptics", function(sender, id, data)
