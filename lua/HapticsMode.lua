@@ -11,8 +11,6 @@ function HapticsMode:Init()
     end)
 
     HapticsMode["initialized"] = true
-
-    -- HapticsMode:DisableGameMode("default")
 end
 
 function HapticsMode:SearchGameModes()
@@ -45,7 +43,7 @@ function HapticsMode:RegisterGameMode(haptics_mode_file_name)
     -- Do not re-register this file if it's already registered
     if not HapticsMode._modes[current_mode_id] then
         HapticsMode._modes[current_mode_id] = {
-            enabled = true,
+            enabled = false,
             hooks = {},
             menus = {},
             name = sandbox_env.config.name
@@ -72,9 +70,20 @@ function HapticsMode:RegisterGameMode(haptics_mode_file_name)
         end
 
         for _, menu_item in pairs(sandbox_env.config.menus) do
-            if not HapticsMode._modes[current_mode_id].menus[menu_item.id] then
+            local menu_item_data = menu_item
+            if not HapticsMode._modes[current_mode_id].menus[menu_item_data.id] then
+                -- Check if a value for this menu item was loaded from a save file and assign that
+                if HapticsCore.settings[current_mode_id] and HapticsCore.settings[current_mode_id][menu_item.id] then
+                    menu_item["value"] = HapticsCore.settings[current_mode_id][menu_item_data.id]
+                elseif menu_item["default"] then
+                    -- If not just assign default if it exists. Otherwise default to 0.
+                    menu_item_data["value"] = menu_item["default"]
+                else
+                    menu_item_data["value"] = 0
+                end
+
                 -- This will ensure using the id as a key and having it as part of the value
-                HapticsMode._modes[current_mode_id].menus[menu_item.id] = menu_item
+                HapticsMode._modes[current_mode_id].menus[menu_item.id] = menu_item_data
             end
         end
     end
@@ -88,6 +97,8 @@ function HapticsMode:EnableGameMode(game_mode_id)
         return
     end
 
+    HapticsMode._modes[game_mode_id].enabled = true
+
     for hook_src_file, hook_id_table in pairs(HapticsMode._modes[game_mode_id].hooks) do
         for _, hook_id in pairs(hook_id_table) do
             HapticsHook:EnableHook(hook_src_file, hook_id)
@@ -100,10 +111,26 @@ function HapticsMode:DisableGameMode(game_mode_id)
         return
     end
 
+    HapticsMode._modes[game_mode_id].enabled = false
+
     for hook_src_file, hook_id_table in pairs(HapticsMode._modes[game_mode_id].hooks) do
         for _, hook_id in pairs(hook_id_table) do
             HapticsHook:DisableHook(hook_src_file, hook_id)
         end
+    end
+end
+
+function HapticsMode:ToggleModeEnabled(mode_id)
+    if not HapticsMode._modes[mode_id] then
+        return
+    end
+
+    if HapticsMode._modes[mode_id].enabled then
+        HapticsMode:DisableGameMode(mode_id)
+        log("Toggled enabled state for " .. mode_id .. " to OFF")
+    else
+        HapticsMode:EnableGameMode(mode_id)
+        log("Toggled enabled state for " .. mode_id .. " to ON")
     end
 end
 

@@ -225,19 +225,19 @@ function HapticsCore:SaveSettings()
     local settings = {
         enabled = HapticsCore["haptics_enabled"],
         websocket_uri = HapticsCore["websocket"],
-        strengths = {}
+        modes = {}
     }
 
     for mode_id, mode_data in pairs(HapticsMode._modes) do
-        if mode_data.enabled then
-            local values = {}
-            for menu_item_id, menu_data in pairs(mode_data.menus) do
-                values[menu_item_id] = menu_data.value
-            end
+        local mode_menu_enable_data = {}
 
-            if not settings.strengths[mode_id] then
-                settings.strengths[mode_id] = values
-            end
+        mode_menu_enable_data["enabled"] = mode_data.enabled
+        for menu_item_id, menu_data in pairs(mode_data.menus) do
+            mode_menu_enable_data[menu_item_id] = menu_data.value
+        end
+
+        if not settings.modes[mode_id] then
+            settings.modes[mode_id] = mode_menu_enable_data
         end
     end
 
@@ -253,14 +253,14 @@ function HapticsCore:LoadSettings()
     local settings = FileIO:ReadScriptData(ModPath .. "settings.json", "json", false)
     HapticsCore["haptics_enabled"] = settings.enabled
     HapticsCore["websocket"] = settings.websocket_uri
-    HapticsCore["strengths"] = settings.strengths
+    HapticsCore["settings"] = settings.modes
 end
 
 --- Sets reasonable and necessary defaults
 function HapticsCore:DefaultSettings()
     HapticsCore["haptics_enabled"] = false
     HapticsCore["websocket"] = "localhost:12345"
-    HapticsCore["strengths"] = {}
+    HapticsCore["settings"] = {}
 end
 
 ---Clones an entire function with upvalues (thanks luajit)
