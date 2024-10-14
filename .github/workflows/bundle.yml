@@ -42,10 +42,7 @@ jobs:
         run: rm -r ./.git* *.zip
         
       - name: Zip Mod
-        uses: vimtor/action-zip@v1.2
-        with:
-          files: ./**/*
-          dest: "Heister's Haptics.zip"
+        run: zip -r "Heister's Haptics.zip" .
 
       - name: Create Pre-Release
         uses: ncipollo/release-action@v1
