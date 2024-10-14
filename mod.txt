@@ -3,7 +3,7 @@
 	"description": "Buttplug <https://buttplug.io/> integration into Payday 2.",
 	"author": "Siri & Yupiel",
 	"contact": "siri1999kira@yahoo.co.jp or yupiel@yupiel.net",
-	"version": "0.1",
+	"version": "1.0",
 	"blt_version": 2,
 	"pre_hooks": [
 		{
