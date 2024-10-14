@@ -21,11 +21,15 @@ jobs:
         run: sudo apt install unzip -y
 
       - name: Get HapticsLib Release
+        id: hapticslib
         uses: pozetroninc/github-action-get-latest-release@master
         with:
           owner: yupiel
           repo: hapticslib
           excludes: prerelease, draft
+
+      - name: Fetch Latest Hapticslib Release
+        run: curl -o- https://github.com/yupiel/hapticslib/releases/download/${{steps.hapticslib.outputs.release}}/hapticslib-win.zip
 
       - run: ls -a
           
