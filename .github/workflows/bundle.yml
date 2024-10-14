@@ -29,8 +29,7 @@ jobs:
           excludes: prerelease, draft
 
       - name: Fetch Latest Hapticslib Release
-        run: curl -o ./hapticslib-win.zip https://github.com/yupiel/hapticslib/releases/download/${{steps.hapticslib.outputs.release}}/hapticslib-win.zip
-
+        run: curl https://github.com/yupiel/hapticslib/releases/latest/download/hapticslib-win.zip -o ./hapticslib-win.zip
       - run: ls -a
           
       - name: Unzip HapticsLib DLL
