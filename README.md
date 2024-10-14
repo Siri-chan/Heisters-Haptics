@@ -1,4 +1,5 @@
 # Heister's Haptics
+[ModWorkshop](https://modworkshop.net/mod/49879)
 ## About
 ### What is Heister's Haptics?
 Heister's Haptics is a fast, scriptable, and highly customizable haptics and vibration engine for Payday 2, with a wide range of device support.
