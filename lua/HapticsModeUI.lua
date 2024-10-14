@@ -19,6 +19,7 @@ end
 ---@param mode_id string @Id of the HapticsMode
 ---@param mode_menus_table table @Table of menu items to create
 function HapticsModeUI:Parse(mode_id, mode_menus_table)
+    -- TODO: Add reset to default button.
     if HapticsModeUI._mode_menus[mode_id] then
         return
     end
@@ -54,7 +55,7 @@ function HapticsModeUI:Parse(mode_id, mode_menus_table)
 
     for _, mode_ui_item in pairs(mode_menus_table) do
         HapticsModeUI:CreateSlider(mode_id, mode_ui_item)
-        -- Add to UI table somewhere so i can destroy it again if disabled
+        -- TODO: Add to UI table somewhere so i can destroy it again if disabled
     end
 end
 

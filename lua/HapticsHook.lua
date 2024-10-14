@@ -75,7 +75,6 @@ function HapticsHook:RunHookTable(hooks_table, path)
         end
     elseif hooks_table == BLT.hook_tables.post then
         if HapticsHook._hooks.post and HapticsHook._hooks.post[path] then
-            log("We're doing post hook")
             HapticsHook:RunHookFunctions(path, false)
         end
     end
@@ -85,7 +84,6 @@ function HapticsHook:RunHookTable(hooks_table, path)
 end
 
 function HapticsHook:RunHookFunctions(source_file, pre)
-    log("runHookfunc")
     for _, hook_data in pairs(HapticsHook._hooks[pre and "pre" or "post"][source_file]) do
         log(hook_data.enabled)
         if hook_data.enabled then
