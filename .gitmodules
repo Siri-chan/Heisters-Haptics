@@ -1,3 +1,4 @@
-[submodule "buttplug-lua"]
-	path = buttplug-lua
-	url = https://github.com/Siri-chan/buttplug-lua-no-require
+[submodule "hapticslib"]
+	path = hapticslib
+	url = https://github.com/yupiel/hapticslib
+	branch = haptics-connection
