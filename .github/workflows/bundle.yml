@@ -20,6 +20,8 @@ jobs:
       - name: Install Extras
         run: sudo apt install unzip -y
 
+      - run: ls -a
+
       - name: Get HapticsLib Release
         uses: pozetroninc/github-action-get-latest-release@master
         with:
