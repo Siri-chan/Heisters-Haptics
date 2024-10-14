@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Extras
-        run: sudo apt install unzip -y
+        run: sudo apt install unzip wget -y
 
       - name: Get HapticsLib Release
         id: hapticslib
@@ -29,7 +29,7 @@ jobs:
           excludes: prerelease, draft
 
       - name: Fetch Latest Hapticslib Release
-        run: curl https://github.com/yupiel/hapticslib/releases/latest/download/hapticslib-win.zip -o ./hapticslib-win.zip
+        run: wget https://github.com/yupiel/hapticslib/releases/latest/download/hapticslib-win.zip
       - run: ls -a
           
       - name: Unzip HapticsLib DLL
