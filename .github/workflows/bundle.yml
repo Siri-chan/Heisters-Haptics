@@ -20,14 +20,14 @@ jobs:
       - name: Install Extras
         run: sudo apt install unzip -y
 
-      - run: ls -a
-
       - name: Get HapticsLib Release
         uses: pozetroninc/github-action-get-latest-release@master
         with:
           owner: yupiel
           repo: hapticslib
           excludes: prerelease, draft
+
+      - run: ls -a
           
       - name: Unzip HapticsLib DLL
         run: unzip hapticslib-win.zip -d /tmp/dll
