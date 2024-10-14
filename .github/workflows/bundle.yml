@@ -52,7 +52,7 @@ jobs:
         run: cp ./hapticslib/target/${{ matrix.target }}/release/hapticslib.dll .
 
       - name: Clean Directory
-        run: rm ./.git* ./hapticslib
+        run: rm -r ./.git* ./hapticslib
         
       - name: Zip Mod
         uses: vimtor/action-zip@v1.2
