@@ -1,0 +1,83 @@
+name: "Build Heister's Haptics Prerelease"
+on: 
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      release_name:
+        description: Specific codename for release
+        required: true
+        default: ""
+jobs:
+  build_multiple_os:
+    name: Build ${{ matrix.artifact_name }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            target: i686-pc-windows-gnu
+            artifact_name: haptics-gnu
+            extras: mingw-w64
+          - os: windows-latest
+            target: i686-pc-windows-msvc
+            artifact_name: haptics-win
+        toolchain:
+          - stable
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - if: ${{ matrix.extras }}
+        run: sudo apt install ${{ matrix.extras }} -y
+      
+      - name: Rustup update and add toolchain
+        run: rustup update ${{ matrix.toolchain }} && rustup target add ${{ matrix.target }}
+
+      - name: Build release version
+        run: cd hapticslib && cargo build --target ${{ matrix.target }} --release --verbose
+
+      - name: Run UPX
+        uses: crazy-max/ghaction-upx@v3
+        with:
+          version: latest
+          files: ./hapticslib/target/${{ matrix.target }}/release/hapticslib.dll
+          args: -9fq
+
+      - name: Copy DLL
+        run: cp ./hapticslib/target/${{ matrix.target }}/release/hapticslib.dll .
+
+      - name: Clean Directory
+        run: rm ./.git* ./hapticslib
+        
+      - name: Zip Mod
+        uses: vimtor/action-zip@v1.2
+        with:
+          files: ./**/*
+          dest: ${{ matrix.artifact_name }}.zip
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ./${{ matrix.artifact_name }}.zip
+          compression-level: 9
+          retention-days: 1
+
+  create_pre_release:
+    needs: build_multiple_os
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: ~/haptics-artifacts
+    - name: Create Pre-Release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: ~/haptics-artifacts/**/*.zip
+        name: "Haptics Pre-Release v0.1.0-rc${{ github.run_number }} ${{ github.event.inputs.release_name }}"
+        prerelease: true
+        tag: "v0.1.0-rc${{ github.run_number }}"    
