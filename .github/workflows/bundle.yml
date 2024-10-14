@@ -38,12 +38,10 @@ jobs:
         run: cp /tmp/dll/hapticslib.dll .
 
       - name: Clean Directory
-        run: rm -r ./.git* *.zip
+        run: rm -r ./.git* *.zip hapticslib
         
       - name: Zip Mod
         run: zip -r "HeistersHaptics.zip" .
-
-      - run: ls -a
 
       - name: Create Release
         uses: ncipollo/release-action@v1
