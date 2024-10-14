@@ -42,11 +42,11 @@ jobs:
         run: rm -r ./.git* *.zip
         
       - name: Zip Mod
-        run: zip -r "Heister's Haptics.zip" .
+        run: zip -r "HeistersHaptics.zip" .
 
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "Heister's Haptics.zip"
+          artifacts: "HeistersHaptics.zip"
           name: "Heister's Haptics Release ${{ github.run_number }} ${{ github.event.inputs.release_name }}"
           tag: "v0.1.0-rc${{ github.run_number }}"    
