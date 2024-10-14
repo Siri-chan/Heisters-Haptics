@@ -43,9 +43,16 @@ jobs:
       - name: Zip Mod
         run: zip -r "HeistersHaptics.zip" .
 
+      - name: Get Version
+        id: project_version
+        uses: ActionsTools/read-json-action@v1.0.5
+        with:
+          file_path: mod.txt
+          prop_path: version
+
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
           artifacts: "HeistersHaptics.zip"
-          name: "Heister's Haptics Release ${{ github.run_number }} ${{ github.event.inputs.release_name }}"
-          tag: "v0.1.0-rc${{ github.run_number }}"    
+          name: "Heister's Haptics Release ${{ steps.project_version.outputs.value }} ${{ github.event.inputs.release_name }}"
+          tag: "v${{ steps.project_version.outputs.value }}"    
