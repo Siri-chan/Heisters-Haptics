@@ -10,26 +10,15 @@ on:
         required: true
         default: ""
 jobs:
-  build_multiple_os:
-    name: Build ${{ matrix.artifact_name }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        include:
-          - os: ubuntu-latest
-            target: i686-pc-windows-gnu
-            artifact_name: haptics-gnu
-            extras: unzip
-        toolchain:
-          - stable
-    runs-on: ${{ matrix.os }}
+  bundle:
+    name: Bundle
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
         uses: actions/checkout@v4
 
       - name: Install Extras
-        if: ${{ matrix.extras }}
-        run: sudo apt install ${{ matrix.extras }} -y
+        run: sudo apt install unzip -y
 
       - name: Get HapticsLib Release
         uses: pozetroninc/github-action-get-latest-release@master
@@ -51,12 +40,12 @@ jobs:
         uses: vimtor/action-zip@v1.2
         with:
           files: ./**/*
-          dest: ${{ matrix.artifact_name }}.zip
+          dest: "Heister's Haptics.zip"
 
       - name: Create Pre-Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: ~/haptics-artifacts/**/*.zip
+          artifacts: "./Heister's Haptics.zip"
           name: "Heister's Haptics Pre-Release v0.1.0-rc${{ github.run_number }} ${{ github.event.inputs.release_name }}"
           prerelease: true
           tag: "v0.1.0-rc${{ github.run_number }}"    
