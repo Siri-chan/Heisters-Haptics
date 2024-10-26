@@ -1,8 +1,12 @@
 name: "Build Heister's Haptics Prerelease"
-on: 
+on:
   push:
     branches:
       - master
+    paths:
+      - "mod.txt"
+      - "meta.json"
+      - ".github/workflows/**"
   workflow_dispatch:
     inputs:
       release_name:
@@ -30,16 +34,16 @@ jobs:
 
       - name: Fetch Latest Hapticslib Release
         run: wget https://github.com/yupiel/hapticslib/releases/latest/download/hapticslib-win.zip
-          
+
       - name: Unzip HapticsLib DLL
         run: unzip hapticslib-win.zip -d /tmp/dll
-          
+
       - name: Copy DLL
         run: cp /tmp/dll/hapticslib.dll .
 
       - name: Clean Directory
         run: rm -r ./.git* *.zip hapticslib
-        
+
       - name: Zip Mod
         run: zip -r "HeistersHaptics.zip" .
 
@@ -55,4 +59,4 @@ jobs:
         with:
           artifacts: "HeistersHaptics.zip"
           name: "Heister's Haptics Release ${{ steps.project_version.outputs.value }} ${{ github.event.inputs.release_name }}"
-          tag: "v${{ steps.project_version.outputs.value }}"    
+          tag: "v${{ steps.project_version.outputs.value }}"

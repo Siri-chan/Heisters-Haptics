@@ -4,9 +4,9 @@
 
 	"Haptics_Options_SubTitle" : "Basic Options",
 	"Haptics_Options_SubDesc" : "Enable or disable some parts of the mod.",
-	"Haptics_Options_EnableFeedback_Desc" : "Enable Haptic Feedback to the device(s) connected via. Buttplug.\nDisable this if you just want to host the mod for others.",
+	"Haptics_Options_EnableFeedback_Desc" : "Enable Haptic Feedback to the device(s) connected via Intiface.\nDisable this if you just want to host the mod for others.",
 	"Haptics_Options_EnableFeedback_Title" : "Enable Haptic Feedback",
-	"Haptics_Options_Websocket_Desc" : "The URI which your Buttplug Server is listening on.\nYou should be able to omit the 'ws://' at the beginning.",
+	"Haptics_Options_Websocket_Desc" : "The URI which your Intiface Server is listening on.\nYou should be able to omit the 'ws://' at the beginning.",
 	"Haptics_Options_Websocket_Title" : "WebSocket URI",
 	
 	"Haptics_Options_Modes_Search" : "Search Modes",
