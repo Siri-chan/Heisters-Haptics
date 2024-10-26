@@ -1,14 +1,22 @@
 {
 	"name": "Heister's Haptics",
-	"description": "Buttplug <https://buttplug.io/> integration into Payday 2.",
+	"description": "Haptics engine for Payday 2.",
 	"author": "Siri & Yupiel",
 	"contact": "siri1999kira@yahoo.co.jp or yupiel@yupiel.net",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"blt_version": 2,
 	"pre_hooks": [
 		{
 			"hook_id": "lib/entry",
 			"script_path": "Core.lua"
+		}
+	],
+	"updates": [
+		{
+			"identifier": "heisters-haptics",
+			"host": {
+				"meta": "https://raw.githubusercontent.com/Siri-chan/Heisters-Haptics/refs/heads/master/meta.json"
+			}
 		}
 	]
 }
