@@ -97,12 +97,11 @@ function groupaistatebesiege()
         local mod_key = HapticsCore["network_id"]
         if id == mod_key and HapticsCore["haptics_enabled"] then
             if data == "control" then
-                log(getMenuItemByID("ControlInput"))
-                if managers.hud._hud_assault_corner._point_of_no_return then
-                    vibrate(getMenuItemByID("NoReturnInput"))
-                else
-                    vibrate(getMenuItemByID("ControlInput"))
-                end
+                vibrate(getMenuItemByID("ControlInput"))
+            end
+
+            if data == "noreturn" then 
+                vibrate(getMenuItemByID("NoReturnInput"))
             end
 
             if data == "anticipation" then
@@ -145,6 +144,9 @@ function groupaistatebesiege()
             else
                 if managers.hud._hud_assault_corner._point_of_no_return then
                     vibrate(getMenuItemByID("NoReturnInput"))
+                    if data_sender then
+                        Net:SendToPeers(mod_key, "noreturn")
+                    end
                 else
                     vibrate(getMenuItemByID("ControlInput"))
 
