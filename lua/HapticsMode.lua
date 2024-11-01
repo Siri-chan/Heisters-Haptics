@@ -69,11 +69,15 @@ function HapticsMode:RegisterGameMode(haptics_mode_file_name)
             end
         end
 
+        if HapticsCore.settings and HapticsCore.settings[current_mode_id] then
+            HapticsMode._modes[current_mode_id].enabled = HapticsCore.settings[current_mode_id]["enabled"]
+        end
+
         for _, menu_item in pairs(sandbox_env.config.menus) do
             local menu_item_data = menu_item
             if not HapticsMode._modes[current_mode_id].menus[menu_item_data.id] then
                 -- Check if a value for this menu item was loaded from a save file and assign that
-                if HapticsCore.settings[current_mode_id] and HapticsCore.settings[current_mode_id][menu_item.id] then
+                if HapticsCore.settings and HapticsCore.settings[current_mode_id] and HapticsCore.settings[current_mode_id][menu_item.id] then
                     menu_item["value"] = HapticsCore.settings[current_mode_id][menu_item_data.id]
                 elseif menu_item["default"] then
                     -- If not just assign default if it exists. Otherwise default to 0.
