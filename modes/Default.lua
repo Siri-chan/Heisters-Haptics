@@ -4,13 +4,13 @@ config = {
     desc = "Vibration based on Assault States. The default mode.",
     hooks = {
         pre = {
-            ["lib/states/missionendstate"] = {{
+            ["lib/states/missionendstate"] = { {
                 id = "disable_menu",
                 func = "le_menu"
-            }}
+            } }
         },
         post = {
-            ["lib/managers/group_ai_states/groupaistatebesiege"] = {{
+            ["lib/managers/group_ai_states/groupaistatebesiege"] = { {
                 id = "default_groupaistatebesiege",
                 func = "groupaistatebesiege"
             } --[[,{
@@ -20,7 +20,7 @@ config = {
                 }]] }
         }
     },
-    menus = {{
+    menus = { {
         type = "slider",
         id = "ControlInput",
         text = "Control State",
@@ -69,7 +69,7 @@ config = {
         default = 75,
         min = 0,
         max = 100
-    }}
+    } }
 }
 
 function le_menu()
@@ -94,8 +94,8 @@ function groupaistatebesiege()
 
     Hooks:Add("NetworkReceivedData", "NetworkHaptics", function(sender, id, data)
         local Net = _G.LuaNetworking
-        local mod_key = HapticsCore["network_id"]
-        if id == mod_key and HapticsCore["haptics_enabled"] then
+        local mod_key = HapticsCore.network_id
+        if id == mod_key and HapticsSettings._settings.haptics_enabled then
             if data == "control" then
                 log(getMenuItemByID("ControlInput"))
                 if managers.hud._hud_assault_corner._point_of_no_return then
@@ -129,7 +129,7 @@ function groupaistatebesiege()
     Hooks:PostHook(GroupAIStateBesiege, "_upd_recon_tasks", "haptics_recon_function", function(self)
         local Net = _G.LuaNetworking
         local data_sender = false
-        local mod_key = HapticsCore["network_id"]
+        local mod_key = HapticsCore.network_id
 
         if Net:IsHost() then
             data_sender = true
@@ -159,7 +159,7 @@ function groupaistatebesiege()
     Hooks:PostHook(GroupAIStateBesiege, "_upd_assault_task", "haptics_assault_function", function(self)
         local Net = _G.LuaNetworking
         local data_sender = false
-        local mod_key = HapticsCore["network_id"]
+        local mod_key = HapticsCore.network_id
 
         if Net:IsHost() then
             data_sender = true
