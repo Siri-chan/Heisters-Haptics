@@ -21,7 +21,7 @@ config = {
         }
     },
     menus = { {
-        type = "slider",
+        type = "oscillator",
         id = "ControlInput",
         text = "Control State",
         default = 0,

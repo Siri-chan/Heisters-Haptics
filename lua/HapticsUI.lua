@@ -79,8 +79,8 @@ function HapticsUI:CreateOptionsMenu()
 
     self.options_menu.sidebar:TextBox({
         name = "Haptics_Options_Intiface_URI",
-        text = "Haptics_Options_Websocket_Title",
-        help = "Haptics_Options_Websocket_Desc",
+        text = "Haptics_Options_Intiface_Title",
+        help = "Haptics_Options_Intiface_Desc",
         localized = true,
         value = HapticsSettings._settings.intiface_uri,
         on_callback = function(item)
@@ -91,9 +91,9 @@ function HapticsUI:CreateOptionsMenu()
     -- TODO: Add localization for button text
     self.options_menu.sidebar:Button({
         name = "Haptics_Options_Search_Modes",
-        text = "Search Modes",
-        help = "",
-        localized = false,
+        text = "Haptics_Options_Search_Modes_Text",
+        help = "Haptics_Options_Search_Modes_Desc",
+        localized = true,
         size_by_text = true,
         on_callback = function(_)
             HapticsMode:SearchModes()

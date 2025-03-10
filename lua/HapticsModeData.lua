@@ -62,7 +62,16 @@ function HapticsModeData:Create(mode_file_path)
     for _, menu_item in pairs(sandbox_env.config.menus) do
         if mode_data.menus[menu_item.id] == nil then
             mode_data.menus[menu_item.id] = HapticsUtility:DeepCopy(menu_item)
-            mode_data.menus[menu_item.id].value = loaded_mode_data and loaded_mode_data[menu_item.id]
+
+            if loaded_mode_data and loaded_mode_data[menu_item.id] and type(loaded_mode_data[menu_item.id]) == "table" then
+                mode_data.menus[menu_item.id].value = loaded_mode_data[menu_item.id].value
+
+                -- TODO: CHANGE TO SLIDER
+                if mode_data.menus[menu_item.id].type == "oscillator" then
+                    mode_data.menus[menu_item.id].low_value = loaded_mode_data[menu_item.id].low_value
+                    mode_data.menus[menu_item.id].high_value = loaded_mode_data[menu_item.id].high_value
+                end
+            end
         end
     end
 
@@ -72,14 +81,13 @@ function HapticsModeData:Create(mode_file_path)
     return mode_data
 end
 
--- TODO: Proper parametrization
-function HapticsModeData:CreateFromConfig(mode_file_path)
-    local mode_data = {}
-    setmetatable(mode_data, HapticsModeData)
+function HapticsModeData:GetModeName()
+    local mode_status_text = "[" ..
+        managers.localization:text("Haptics_Options_Modes_"
+            .. (self.enabled and "Enabled" or "Disabled"))
+        .. "]"
 
-    -- Do proper initialization from file
-
-    return mode_data
+    return mode_status_text .. " - " .. self.name
 end
 
 function HapticsModeData:GetHooksForFile(source_file)
@@ -136,9 +144,9 @@ function HapticsModeData:RenderMenu(menu_root)
 
     self.menu_group = menu_root:Group({
         name = self.id,
-        text = self.name,
-        label = self.menu_label,
-        accent_color = Color.green
+        text = self:GetModeName(),
+        label = self.menu_label
+        -- accent_color = Color.green
     })
 
     self.menu_group:Toggle({
@@ -148,7 +156,8 @@ function HapticsModeData:RenderMenu(menu_root)
         value = self.enabled,
         on_callback = function(_)
             self.enabled = not self.enabled
-            -- TODO: visual indication
+            -- Updates the localized [ENABLED]/[DISABLED] label in front of the mode name
+            self.menu_group:SetText(self:GetModeName())
         end
     })
 
@@ -161,7 +170,7 @@ function HapticsModeData:RenderMenu(menu_root)
                 text = menu_item.text,
                 label = self.menu_label,
                 -- Value will be set by changing the slider, default is default
-                value = self.menus[menu_item_id].value or menu_item.default,
+                value = self.menus[menu_item_id].value or menu_item.default or 0,
                 min = (menu_item.min and HapticsUtility:Clamp(menu_item.min, 0, 100)) or 0,
                 max = (menu_item.max and HapticsUtility:Clamp(menu_item.max, 0, 100)) or 100,
                 -- TODO: Decimals are planned but are disabled for now
@@ -169,6 +178,50 @@ function HapticsModeData:RenderMenu(menu_root)
                 floats = 0,
                 on_callback = function(item)
                     self.menus[menu_item_id].value = math.floor(item:Value() + 0.5)
+                end
+            })
+        elseif menu_item.type == "oscillator" then
+            local oscillator_group = self.menu_group:Group({
+                name = menu_item_id,
+                text = menu_item.text
+            })
+
+            -- TODO: Make sure these cannot cross
+            oscillator_group:NumberBox({
+                name = menu_item_id .. "_low",
+                text = "Min. Strength",
+                value = self.menus[menu_item_id].low_value or menu_item.min or 0,
+                on_callback = function(item)
+                    local clamped_input = HapticsUtility:Clamp(item:Value(), menu_item.min or 0,
+                        (menu_item.high_value or menu_item.max or 100))
+
+                    self.menus[menu_item_id].low_value = clamped_input
+
+                    if not self.menus[menu_item_id].high_value or self.menus[menu_item_id].high_value < clamped_input then
+                        clamped_input = clamped_input + 1
+                        self.menus[menu_item_id].high_value = clamped_input
+                    end
+
+                    item:SetValue(clamped_input, false)
+                end
+            })
+
+            oscillator_group:NumberBox({
+                name = menu_item_id .. "_high",
+                text = "Max. Strength",
+                value = self.menus[menu_item_id].high_value or menu_item.max or 100,
+                on_callback = function(item)
+                    local clamped_input = HapticsUtility:Clamp(item:Value(),
+                        (self.menus[menu_item_id].low_value or menu_item.min or 0), menu_item.max or 100)
+
+                    self.menus[menu_item_id].high_value = clamped_input
+
+                    if not self.menus[menu_item_id].low_value or self.menus[menu_item_id].low_value > clamped_input then
+                        clamped_input = clamped_input - 1
+                        self.menu[menu_item_id].low_value = clamped_input
+                    end
+
+                    item:SetValue(clamped_input, false)
                 end
             })
         end

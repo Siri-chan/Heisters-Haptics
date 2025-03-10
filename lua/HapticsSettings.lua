@@ -33,10 +33,23 @@ function HapticsSettings:Save()
             self._settings.modes_settings[mode_id].enabled = mode_data.enabled
         end
 
-        for menu_id, menu_id_data in pairs(mode_data.menus) do
-            if menu_id_data.value ~= nil and menu_id_data.value ~= menu_id_data.default then
-                self._settings.modes_settings[mode_id][menu_id] = menu_id_data.value
+        for menu_id, menu_data in pairs(mode_data.menus) do
+            local menu_item_values = nil
+
+            -- TODO: CHANGE TO SLIDER
+            if menu_data.type == "oscillator" then
+                menu_item_values = {
+                    value = menu_data.value,
+                    low_value = menu_data.low_value,
+                    high_value = menu_data.high_value
+                }
+            else
+                menu_item_values = {
+                    value = menu_data.value
+                }
             end
+
+            self._settings.modes_settings[mode_id][menu_id] = menu_item_values
         end
     end
 
@@ -67,7 +80,7 @@ function HapticsSettings:ParseLegacySettings(loaded_settings)
 end
 
 function HapticsSettings:GetLoadedModeData(mode_id)
-    if self._settings.modes_settings[mode_id] ~= nil then
+    if self._settings.modes_settings ~= nil and self._settings.modes_settings[mode_id] ~= nil then
         return self._settings.modes_settings[mode_id]
     end
 
