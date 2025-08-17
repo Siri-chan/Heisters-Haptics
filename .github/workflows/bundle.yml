@@ -45,7 +45,7 @@ jobs:
         run: rm -r ./.git* *.zip hapticslib
 
       - name: Zip Mod
-        run: cd ..; mv Heisters-Haptics "Heister's Haptics"; zip -r "HeistersHaptics.zip" "./Heister's Haptics"
+        run: cd ..; cp -r Heisters-Haptics "Heister's Haptics"; zip -r "HeistersHaptics.zip" "./Heister's Haptics"
 
       - name: Get Version
         id: project_version
